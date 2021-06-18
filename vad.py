@@ -6,8 +6,11 @@ __author__ = 'Marcin Kuropatwiński'
 import copy
 
 import numpy as np
-from scipy.misc import logsumexp
-
+from scipy.special import logsumexp
+import fbe
+import sys
+sys.path.append("./noise-tracking-hendriks/")
+import noise_tracking_hendriks
 
 class vad:
 
@@ -35,7 +38,7 @@ class vad:
 
         self.frame = frame
 
-        self.mag_len = frame/2+1 # the length of the left half of the spectrum
+        self.mag_len = int(frame/2+1) # the length of the left half of the spectrum
 
         self.G_prev = 0 # previous speech detection statistics
 
@@ -124,7 +127,36 @@ class vad:
 
         return spprb
 
+FRAME = 512
 
 if __name__ == "__main__":
 
-    pass
+    speech, sampling_rate = fbe.load_wav("./test-data/SI2290.wav")
+
+    nst = noise_tracking_hendriks.NoiseTracking(frame = FRAME)
+
+    v = vad(frame = FRAME)
+
+    speech_psd = fbe.fbe()
+
+    start = 0
+
+    while start + FRAME <= speech.shape[0]:
+
+        fs = speech[start:start+FRAME]
+
+        speech_psd.set_frm(fs)
+
+        psd = speech_psd.psd()
+        
+        nst.noisePowRunning(psd)
+
+        speech_presence_probability = v.vad(psd,nst.get_noise_psd())
+
+        print(f"Speech presence probability: {speech_presence_probability}, frame mean power: {np.sum(fs*fs)/FRAME}")
+
+        start += FRAME//2
+
+
+
+
