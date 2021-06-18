@@ -1,0 +1,3 @@
+[submodule "noise-tracking-hendriks"]
+	path = noise-tracking-hendriks
+	url = https://github.com/mkurop/noise-tracking-hendriks.git
