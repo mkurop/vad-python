@@ -7,7 +7,7 @@ import copy
 
 import numpy as np
 from scipy.special import logsumexp
-import fbe
+import fbe_vad_sohn
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath("__file__")),"./noise-tracking-hendriks/"))
@@ -132,13 +132,13 @@ FRAME = 512
 
 if __name__ == "__main__":
 
-    speech, sampling_rate = fbe.load_wav("./test-data/SI2290.wav")
+    speech, sampling_rate = fbe_vad_sohn.load_wav("./test-data/SI2290.wav")
 
     nst = noise_tracking_hendriks.NoiseTracking(frame = FRAME)
 
     v = vad(frame = FRAME)
 
-    speech_psd = fbe.fbe()
+    speech_psd = fbe_vad_sohn.fbe()
 
     start = 0
 
