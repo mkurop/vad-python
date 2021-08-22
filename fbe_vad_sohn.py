@@ -1362,13 +1362,17 @@ def load_wav(file_ : str, target_sampling_rate : int = 16000) -> Tuple[np.ndarra
 
     s = s/2.**15
 
-    if int(sr) != int(target_sampling_rate)
+    print(f"Start resmpling")
+
+    if int(sr) != int(target_sampling_rate):
     
-        s_resampled = scipy.signal.resample(s,np.round(target_sampling_rate/sr*s.shape[0]))
+        s_resampled = scipy.signal.resample(s,np.uint32(np.round(target_sampling_rate/sr*s.shape[0])))
 
     else:
 
         s_resampled = s
+
+    print(f"Resampling done")
 
     np.random.seed(1000) # causes the dither is same on each run
 

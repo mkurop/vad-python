@@ -78,6 +78,7 @@ class vad:
 
         gammak = np.minimum(X / lambdaN, 1000)  # limit post SNR to avoid overflows
 
+
         if self.start:
 
             ksi = self.aa + (1 - self.aa) * np.maximum(gammak - 1, 0)
@@ -87,6 +88,8 @@ class vad:
             ksi = self.aa * np.minimum(self.X_prev / lambdaN, 100) + (1 - self.aa) * np.maximum(gammak - 1, 0)
 
             ksi = np.maximum(self.ksi_min, ksi)
+
+        print(f"sum snr {10*np.log10(np.sum(ksi)/self.frame)}")
 
         self.l = gammak * ksi / (1 + ksi) - np.log(1 + ksi)  # eq 3
 
