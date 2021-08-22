@@ -1388,7 +1388,7 @@ def save_wav(signal : np.ndarray, sampling_rate : int, file_name : str):
         else:
             print(f'Path {os.path.dirname(file_name)} succesfully created.')
 
-    wavfile.write(file_name, sampling_rate, np.int16(signal*2**15))
+    sf.write(file_name, signal, sampling_rate)
 
 
 
