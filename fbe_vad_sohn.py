@@ -17,7 +17,11 @@ from typing import Tuple
 
 from scipy.io import wavfile
 
+import scipy.signal
+
 import os
+
+import soundfile as sf
 
 class sin2cos2:
 
@@ -1338,21 +1342,33 @@ def enhance2(psd_r, psd_n, mt, angular_r, an_win, ro=0.05): # note that instead 
 
     return enh_fs #, psd_enh
 
-def load_wav(file_ : str) -> Tuple[np.ndarray,int]:
+def load_wav(file_ : str, target_sampling_rate : int = 16000) -> Tuple[np.ndarray,int,int]:
+    """Loads sound in a variety of formats supported by libsndfile. Resamples the input sound to target_sampling_rate.
+
+    :param file_: sound file path
+    :type file_: str
+    :param target_sampling_rate: target sampling rate
+    :type target_sampling_rate: int
+    :returns: * the resampled sound to target sampling rate
+              * the original sound sampling rate
+              * the target sampling rate
+    :rtype: Tuple[np.ndarray,int,int]
+    """
 
     if not os.path.exists(file_):
         raise ValueError(f"The file {file_} does not exist.")
 
-    sr, s = wavfile.read(file_)
+    s, sr = sf.read(file_, dtype=np.float32)
 
     s = s/2.**15
     
+    s_resampled = scipy.signal.resample(s,np.round(target_sampling_rate/sr*s.shape[0]))
 
     np.random.seed(1000) # causes the dither is same on each run
 
-    s += np.random.randn(*s.shape)*1.e-6 # add dither to improve numerical behaviour
+    s_resampled += np.random.randn(*s_resampled.shape)*1.e-6 # add dither to improve numerical behaviour
 
-    return s, int(sr)
+    return s_resampled, int(sr), target_sampling_rate
 
 def save_wav(signal : np.ndarray, sampling_rate : int, file_name : str):
 
