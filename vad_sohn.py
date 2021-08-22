@@ -89,7 +89,7 @@ class vad:
 
             ksi = np.maximum(self.ksi_min, ksi)
 
-        print(f"sum snr {10*np.log10(np.sum(ksi)/self.frame)}")
+        #  print(f"sum snr {10*np.log10(np.sum(ksi)/self.frame)}")
 
         self.l = gammak * ksi / (1 + ksi) - np.log(1 + ksi)  # eq 3
 

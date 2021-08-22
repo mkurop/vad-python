@@ -1360,8 +1360,6 @@ def load_wav(file_ : str, target_sampling_rate : int = 16000) -> Tuple[np.ndarra
 
     s, sr = sf.read(file_, dtype=np.float32)
 
-    s = s/2.**15
-
     print(f"Start resmpling")
 
     if int(sr) != int(target_sampling_rate):
